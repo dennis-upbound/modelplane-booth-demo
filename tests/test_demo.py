@@ -46,9 +46,11 @@ def test_keys_from_a_pipe():
     assert out.count("1 · Fleet") == 2 and out.count("What the ML team writes") == 2
 
 
-def test_no_real_addresses():
+def test_only_documentation_addresses():
+    import re
     src = APP.read_text()
-    assert "35.238.1.41" not in src and "34.133.83.252" not in src
+    ips = set(re.findall(r"\b\d{1,3}(?:\.\d{1,3}){3}\b", src))
+    assert all(ip.startswith(("203.0.113.", "198.51.100.", "192.0.2.", "127.")) for ip in ips), ips
 
 
 def stub(tmp_path, body):
