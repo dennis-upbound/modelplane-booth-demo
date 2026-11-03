@@ -6,12 +6,12 @@ goes down for maintenance. Each command and output comes from a real two-cloud
 fleet, as Modelplane v0.6 prints it. The app runs offline, without a cluster or
 an account.
 
-<img src="https://github.com/upbound/modelplane-booth-demo/releases/latest/download/booth-demo.gif" width="960" alt="The booth demo">
+<img src="https://github.com/dennis-upbound/modelplane-booth-demo/releases/latest/download/booth-demo.gif" width="960" alt="The booth demo">
 
 ## Install
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/upbound/modelplane-booth-demo/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/dennis-upbound/modelplane-booth-demo/main/install.sh | sh
 ```
 
 The script downloads the binary for your machine from the latest release,
@@ -20,7 +20,7 @@ that). Releases have builds for macOS on Apple silicon and Linux on amd64 and
 arm64. Anywhere else, with [uv](https://docs.astral.sh/uv/):
 
 ```bash
-uv run https://raw.githubusercontent.com/upbound/modelplane-booth-demo/main/modelplane_demo.py
+uv run https://raw.githubusercontent.com/dennis-upbound/modelplane-booth-demo/main/modelplane_demo.py
 ```
 
 ## Run

@@ -1,12 +1,12 @@
 #!/bin/sh
 # Installs modelplane-demo from the latest GitHub release:
 #
-#   curl -fsSL https://raw.githubusercontent.com/upbound/modelplane-booth-demo/main/install.sh | sh
+#   curl -fsSL https://raw.githubusercontent.com/dennis-upbound/modelplane-booth-demo/main/install.sh | sh
 #
 # BIN_DIR picks where it goes ($HOME/.local/bin by default). MPDEMO_VERSION=v0.1.0 picks a release.
 set -eu
 
-repo="${MPDEMO_REPO:-upbound/modelplane-booth-demo}"
+repo="${MPDEMO_REPO:-dennis-upbound/modelplane-booth-demo}"
 version="${MPDEMO_VERSION:-latest}"
 bin_dir="${BIN_DIR:-$HOME/.local/bin}"
 
