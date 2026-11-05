@@ -92,3 +92,40 @@ too, so the GIF above and the gist's link resolve:
 ```bash
 gh release upload v0.1.0 booth-demo.gif booth-demo.mp4
 ```
+
+## Walkthrough
+
+A longer demo in [walkthrough/](walkthrough): a kubectl terminal beside a map of the
+fleet it changes, for a talk or a deep dive rather than a booth screen. Unlike the booth
+demo, it runs on a simulated fleet: the objects and commands are Modelplane v0.6's, and the
+map and outputs are the simulator's. It needs a terminal of at least 180 × 45 and
+[uv](https://docs.astral.sh/uv/):
+
+```bash
+uv run walkthrough/walkthrough.py              # three chapters, then Day 2: Enter at every prompt
+uv run walkthrough/walkthrough.py --short      # the three chapters only, about 3 minutes
+uv run walkthrough/walkthrough.py --booth      # plays itself and loops
+uv run walkthrough/walkthrough.py --from deploy   # start at a step, with the fleet built up to it
+```
+
+1. **Set up the inference fleet.** The platform team describes GPU nodes once
+   (InferenceClass) and the clusters that have them (InferenceCluster): an EKS cluster
+   Modelplane provisions and a CoreWeave cluster it adopts.
+2. **Deploy a model.** The ML team's ModelDeployment asks for devices, not machines. Weights
+   are cached once per cluster and replicas spread across clouds.
+3. **Scale the fleet.** A ModelService and an InferenceGateway give the model one name on the
+   OpenAI and Anthropic APIs, and it keeps answering as replicas, an AMD cluster in Europe and
+   a ROCm deployment are added.
+4. **Day 2.** Turn on fleet telemetry, canary a second engine by label, compare the two on one
+   query, promote, retire, and drain a cluster with a taint.
+
+Each step is badged with who does it: platform team or ML team. Every step, caption and
+talking point lives in [walkthrough/story.yaml](walkthrough/story.yaml), and
+[walkthrough/talk-track.md](walkthrough/talk-track.md) is generated from it
+(`uv run walkthrough/walkthrough.py --talk-track > walkthrough/talk-track.md`). The
+manifests it applies are in [walkthrough/manifests/](walkthrough/manifests); lines marked
+`simulator:` in its output are the simulator's notes, not product output. Its tests:
+
+```bash
+uv run --with pytest --with rich --with pyyaml --with textual pytest -q walkthrough/tests
+```

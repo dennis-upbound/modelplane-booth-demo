@@ -1,0 +1,18 @@
+# The front door: OpenAI at /v1 and Anthropic at /anthropic/v1, one API key per caller.
+# Point us.gw.example.com at the address the gateway publishes.
+apiVersion: modelplane.ai/v1alpha1
+kind: InferenceGateway
+metadata:
+  name: us
+spec:
+  clusterName: aws-us-east
+  tls:
+    certificateRefs:
+    - name: us-gw-example-com-tls
+  auth:
+    method: APIKey
+    apiKey:
+      secretSelector:
+        matchLabels: { modelplane.ai/inference-keys: "true" }
+  serviceSelector:
+    matchLabels: { exposure: public }

@@ -1,0 +1,12 @@
+# Weights are fetched once per cluster onto shared storage, not on every pod start.
+# With no clusterSelector, every cluster that has cache storage gets a copy.
+apiVersion: modelplane.ai/v1alpha1
+kind: ModelCache
+metadata:
+  name: glm-5-3
+  namespace: coding-team
+spec:
+  source: HuggingFace
+  huggingFace:
+    repo: zai-org/GLM-5.3
+    sizeGiB: 710

@@ -1,0 +1,41 @@
+# The same model on AMD in Europe: a ROCm image and an AMD device request.
+# It carries app: glm, so the ModelService picks it up with no change.
+apiVersion: modelplane.ai/v1alpha1
+kind: ModelDeployment
+metadata:
+  name: glm-eu
+  namespace: coding-team
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels: { app: glm, env: prod }
+    spec:
+      clusterSelector: { matchLabels: { geo: eu } }
+      modelCacheRef: { name: glm-5-3 }
+      engines:
+      - name: vllm
+        members:
+        - role: Standalone
+          nodeSelector:
+            devices:
+            - name: gpu
+              count: 8
+              selectors:
+              - cel: device.capacity["gpu.amd.com"].memory.compareTo(quantity("140Gi")) >= 0
+          template:
+            spec:
+              containers:
+              - name: engine
+                image: rocm/vllm:rocm7.14.1_cdna_ubuntu24.04_py3.14_pytorch_2.11_vllm_0.23.0
+                command: ["vllm", "serve", "zai-org/GLM-5.3"]
+                args:
+                - --served-model-name=$(MODELPLANE_SERVED_MODEL_NAME)
+                - --tensor-parallel-size=8
+                - --trust-remote-code
+                - --enable-auto-tool-choice
+                - --tool-call-parser=glm47
+                - --reasoning-parser=glm47
+                - --kv-cache-dtype=fp8
+                - --enable-prefix-caching
+                - --port=8000

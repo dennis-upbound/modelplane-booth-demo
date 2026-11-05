@@ -1,0 +1,44 @@
+# Hardware, described once. A ModelDeployment never names a machine type; it asks
+# for devices, and the scheduler matches that request against these.
+apiVersion: modelplane.ai/v1alpha1
+kind: InferenceClass
+metadata:
+  name: h200-8x
+spec:
+  description: "EKS p5en.48xlarge, 8x NVIDIA H200 141GB"
+  provisioning:
+    provider: EKS
+    eks:
+      instanceType: p5en.48xlarge
+      diskSizeGb: 100
+      accelerator:
+        type: nvidia-h200
+        count: 8
+  devices:
+  - name: gpu
+    claim: DRA
+    driver: gpu.nvidia.com
+    deviceClassName: gpu.nvidia.com
+    count: 8
+    attributes:
+      architecture: { string: Hopper }
+    capacity:
+      memory: { value: "143771Mi" }
+---
+# Bring your own: no provisioning block, only the devices the nodes carry.
+apiVersion: modelplane.ai/v1alpha1
+kind: InferenceClass
+metadata:
+  name: b200-8x
+spec:
+  description: "Bring your own: 8x NVIDIA B200 180GB"
+  devices:
+  - name: gpu
+    claim: DRA
+    driver: gpu.nvidia.com
+    deviceClassName: gpu.nvidia.com
+    count: 8
+    attributes:
+      architecture: { string: Blackwell }
+    capacity:
+      memory: { value: "183359Mi" }

@@ -1,0 +1,33 @@
+# One object per cluster. Modelplane provisions the EKS cluster and its pool;
+# the CoreWeave cluster already exists and is handed over by kubeconfig.
+apiVersion: modelplane.ai/v1alpha1
+kind: InferenceCluster
+metadata:
+  name: aws-us-east
+  labels: { geo: us }
+spec:
+  cluster:
+    source: EKS
+    eks:
+      region: us-east-1
+  nodePools:
+  - name: h200
+    className: h200-8x
+    nodeCount: 3
+    zones: [us-east-1a, us-east-1b]     # zones with p5en capacity in your account
+---
+apiVersion: modelplane.ai/v1alpha1
+kind: InferenceCluster
+metadata:
+  name: coreweave-us-west
+  labels: { geo: us }
+spec:
+  cluster:
+    source: Existing
+    existing:
+      secretRef: { name: coreweave-us-west-kubeconfig, key: kubeconfig }
+      cache: { storageClassName: shared-vast }   # an RWX class you provide, for ModelCache
+  nodePools:
+  - name: b200                          # label the GPU nodes modelplane.ai/pool=b200
+    className: b200-8x
+    nodeCount: 2

@@ -1,0 +1,19 @@
+# The same name, now split by label: 90% to env: prod, 10% to env: canary.
+apiVersion: modelplane.ai/v1alpha1
+kind: ModelService
+metadata:
+  name: glm
+  namespace: coding-team
+  labels: { exposure: public }
+spec:
+  endpoints:
+  - name: prod
+    weight: 90
+    selector:
+      matchLabels: { app: glm, env: prod }
+  - name: canary
+    weight: 10
+    selector:
+      matchLabels: { app: glm, env: canary }
+  timeouts:
+    request: 1800s
