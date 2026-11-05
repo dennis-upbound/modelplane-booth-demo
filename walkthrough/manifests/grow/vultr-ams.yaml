@@ -1,0 +1,51 @@
+# A third cluster, in Europe, on AMD. Bring-your-own is the source that installs
+# the AMD serving stack today.
+apiVersion: modelplane.ai/v1alpha1
+kind: InferenceClass
+metadata:
+  name: mi325x-8x
+spec:
+  description: "Bring your own: 8x AMD Instinct MI325X 256GB"
+  devices:
+  - name: gpu
+    claim: DRA
+    driver: gpu.amd.com
+    deviceClassName: gpu.amd.com
+    count: 8
+    attributes:
+      productName: { string: AMD_Instinct_MI325_OAM }
+    capacity:
+      memory: { value: "262128Mi" }
+---
+apiVersion: modelplane.ai/v1alpha1
+kind: InferenceCluster
+metadata:
+  name: vultr-ams
+  labels: { geo: eu }
+spec:
+  cluster:
+    source: Existing
+    existing:
+      secretRef: { name: vultr-ams-kubeconfig, key: kubeconfig }
+      cache: { storageClassName: vultr-rwx }    # an RWX class you provide, for ModelCache
+  nodePools:
+  - name: mi325x                        # label the GPU nodes modelplane.ai/pool=mi325x
+    className: mi325x-8x
+    nodeCount: 1
+---
+apiVersion: modelplane.ai/v1alpha1
+kind: InferenceGateway
+metadata:
+  name: eu
+spec:
+  clusterName: vultr-ams
+  tls:
+    certificateRefs:
+    - name: eu-gw-example-com-tls
+  auth:
+    method: APIKey
+    apiKey:
+      secretSelector:
+        matchLabels: { modelplane.ai/inference-keys: "true" }
+  serviceSelector:
+    matchLabels: { exposure: public }

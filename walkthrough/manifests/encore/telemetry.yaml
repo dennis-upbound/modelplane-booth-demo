@@ -1,0 +1,11 @@
+# One object turns on a collector on every cluster. Engine metrics from vLLM and
+# SGLang arrive under the same modelplane_* names, in your Prometheus.
+apiVersion: modelplane.ai/v1alpha1
+kind: TelemetryDestination
+metadata:
+  name: fleet
+spec:
+  sinks:
+  - name: prometheus
+    type: prometheus_remote_write
+    endpoint: https://prom.example.internal/api/v1/write

@@ -1,0 +1,15 @@
+# The name callers use: coding-team/glm. It selects endpoints by label, so any
+# replica of any deployment labelled app: glm, on any cluster, can answer.
+apiVersion: modelplane.ai/v1alpha1
+kind: ModelService
+metadata:
+  name: glm
+  namespace: coding-team
+  labels: { exposure: public }
+spec:
+  endpoints:
+  - name: glm
+    selector:
+      matchLabels: { app: glm }
+  timeouts:
+    request: 1800s
